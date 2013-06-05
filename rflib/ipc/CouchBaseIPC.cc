@@ -15,22 +15,17 @@ CouchBaseIPCMessageService::CouchBaseIPCMessageService(const string &address, co
 }*/
 
 void CouchBaseMessageService::connect(Couchbase::connect &connection, const string &address) {
-    try {
-        connection.connect(address);
-    }
-    catch(mongo::DBException &e) {
-        cout << "Exception: " << e.what() << endl;
-        exit(1);
-    }
+    //No CouchBase nao e possivel detectar se o servidor esta caido. Isso nao chega a ser um problema porque, como o CouchBase funciona em modo cluster, um nodo caido pode ser substituido por outro, alem do servidor se recuperar automaticamente e rapidamente de erros.
+    conection.connect(address);
 }
-void MongoIPCMessageService::listenWorker(const string &channelId, IPCMessageFactory *factory, IPCMessageProcessor *processor) {
+void CouchBaseIPCMessageService::listenWorker(const string &channelId, IPCMessageFactory *factory, IPCMessageProcessor *processor) {
     string ns = this->db + "." + channelId;
 
-    mongo::DBClientConnection connection;
+    Couchbase::connect connection;
     this->connect(connection, this->address);
 
-    this->createChannel(connection, ns);
-    mongo::Query query = QUERY(TO_FIELD << this->get_id() << READ_FIELD << false).sort("$natural");
+//    this->createChannel(connection, ns);
+    string query = "QUERY(TO_FIELD << this->get_id() << READ_FIELD << false).sort('$natural');"
     while (true) {
         auto_ptr<mongo::DBClientCursor> cur = connection.query(ns, query,
                                                                PENDINGLIMIT);
@@ -67,7 +62,7 @@ bool MongoIPCMessageService::send(const string &channelId, const string &to, IPC
     return true;
 }
 
-mongo::BSONObj putInEnvelope(const string &from, const string &to, IPCMessage &msg) {
+/*mongo::BSONObj putInEnvelope(const string &from, const string &to, IPCMessage &msg) {
     mongo::BSONObjBuilder envelope;
 
     envelope.genOID();
@@ -87,4 +82,4 @@ IPCMessage* takeFromEnvelope(mongo::BSONObj envelope, IPCMessageFactory *factory
    IPCMessage* msg = factory->buildForType(envelope[TYPE_FIELD].Int());
    msg->from_BSON(envelope[CONTENT_FIELD].Obj().objdata());
    return msg;
-}
+}*/

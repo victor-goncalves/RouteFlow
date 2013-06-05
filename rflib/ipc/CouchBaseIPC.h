@@ -11,11 +11,13 @@
 #define CONTENT_FIELD "content"
 
 // 1 MB for the capped collection
+//CouchBase nao suporta capped collection
 //#define CC_SIZE 1048576
 
 // Handle a maximum of 10 messages at a time
 #define PENDINGLIMIT 10
 
+//CouchBase nao suporta BSON
 //mongo::BSONObj putInEnvelope(const string &from, const string &to, IPCMessage &msg);
 //IPCMessage* takeFromEnvelope(mongo::BSONObj envelope, IPCMessageFactory *factory);
 
