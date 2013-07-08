@@ -1,0 +1,25 @@
+CC := g++
+CCF := -Wall -W
+LIB := -I../
+PLIB := -lmongoclient -lboost_thread-mt -lboost_filesystem -lboost_program_options -lcouchbase -ljsoncpp -ljson
+
+
+SRC := $(wildcard *.cc)
+HSRC := $(wildcard *.h)
+OBJ := $(SRC:.cc=.o)
+
+TSRC := $(wildcard *.cpp)
+TEST := $(TSRC:.cpp=.run)
+
+%.o: %.cc $(HSRC)
+	$(CC) $(CCF) $(LIB) -c $< -o $@ 
+
+%.run: %.cpp $(OBJ)
+	$(CC) $(CCF) $(LIB) $< -o $@ $(OBJ) $(PLIB)
+
+all: $(OBJ)
+
+test: $(TEST)
+
+clean:
+	rm -f *.o
