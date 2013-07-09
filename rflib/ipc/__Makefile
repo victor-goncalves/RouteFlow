@@ -14,7 +14,7 @@ TEST := $(TSRC:.cpp=.run)
 	$(CC) $(CCF) $(LIB) -c $< -o $@ 
 
 %.run: %.cpp $(OBJ)
-	$(CC) $(CCF) $(LIB) $< -o $@ $(OBJ) $(PLIB)
+	$(CC) $(CCF) $(LIB) $< -o $@ $(PLIB) *.o
 
 all: $(OBJ)
 
